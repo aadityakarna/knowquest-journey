@@ -21,19 +21,19 @@ const Footer = () => {
               Your personalized learning journey starts here. Discover, learn, and grow with resources tailored to your needs.
             </p>
             <div className="flex space-x-4 pt-2">
-              <a href="#" className="text-muted-foreground hover:text-foreground transition-colors">
+              <a href="https://github.com/aadityakarna" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground transition-colors">
                 <Github size={20} />
                 <span className="sr-only">GitHub</span>
               </a>
-              <a href="#" className="text-muted-foreground hover:text-foreground transition-colors">
+              <a href="https://twitter.com/Karna78Karna" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground transition-colors">
                 <Twitter size={20} />
                 <span className="sr-only">Twitter</span>
               </a>
-              <a href="#" className="text-muted-foreground hover:text-foreground transition-colors">
+              <a href="https://linkedin.com/in/aaditya-karna" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground transition-colors">
                 <Linkedin size={20} />
                 <span className="sr-only">LinkedIn</span>
               </a>
-              <a href="#" className="text-muted-foreground hover:text-foreground transition-colors">
+              <a href="mailto:aadityakarna646@gmail.com" className="text-muted-foreground hover:text-foreground transition-colors">
                 <Mail size={20} />
                 <span className="sr-only">Email</span>
               </a>
@@ -60,8 +60,8 @@ const Footer = () => {
                 </Link>
               </li>
               <li>
-                <Link to="/resources" className="text-muted-foreground hover:text-foreground transition-colors text-sm">
-                  Resources
+                <Link to="/contact" className="text-muted-foreground hover:text-foreground transition-colors text-sm">
+                  Contact Us
                 </Link>
               </li>
               <li>
@@ -114,9 +114,9 @@ const Footer = () => {
                 </a>
               </li>
               <li>
-                <a href="#" className="text-muted-foreground hover:text-foreground transition-colors text-sm">
+                <Link to="/contact" className="text-muted-foreground hover:text-foreground transition-colors text-sm">
                   Contact Us
-                </a>
+                </Link>
               </li>
               <li>
                 <a href="#" className="text-muted-foreground hover:text-foreground transition-colors text-sm">
