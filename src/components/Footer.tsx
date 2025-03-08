@@ -60,6 +60,11 @@ const Footer = () => {
                 </Link>
               </li>
               <li>
+                <Link to="/faq" className="text-muted-foreground hover:text-foreground transition-colors text-sm">
+                  FAQ
+                </Link>
+              </li>
+              <li>
                 <Link to="/contact" className="text-muted-foreground hover:text-foreground transition-colors text-sm">
                   Contact Us
                 </Link>
@@ -109,9 +114,9 @@ const Footer = () => {
             <h3 className="font-semibold text-lg mb-4">Support</h3>
             <ul className="space-y-2">
               <li>
-                <a href="#" className="text-muted-foreground hover:text-foreground transition-colors text-sm">
+                <Link to="/faq" className="text-muted-foreground hover:text-foreground transition-colors text-sm">
                   FAQs
-                </a>
+                </Link>
               </li>
               <li>
                 <Link to="/contact" className="text-muted-foreground hover:text-foreground transition-colors text-sm">
@@ -142,6 +147,9 @@ const Footer = () => {
             © {currentYear} KnowQuest. All rights reserved.
           </p>
           <div className="flex space-x-6 mt-4 md:mt-0">
+            <Link to="/faq" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+              FAQ
+            </Link>
             <a href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
               Privacy
             </a>
