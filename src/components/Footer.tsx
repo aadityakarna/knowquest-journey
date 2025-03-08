@@ -8,7 +8,7 @@ const Footer = () => {
   return (
     <footer className="bg-background border-t border-border">
       <div className="container mx-auto px-4 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {/* Logo and description */}
           <div className="space-y-4">
             <Link to="/" className="flex items-center gap-2">
@@ -73,38 +73,6 @@ const Footer = () => {
                 <Link to="/profile" className="text-muted-foreground hover:text-foreground transition-colors text-sm">
                   Profile
                 </Link>
-              </li>
-            </ul>
-          </div>
-          
-          {/* Learning Paths */}
-          <div>
-            <h3 className="font-semibold text-lg mb-4">Learning Paths</h3>
-            <ul className="space-y-2">
-              <li>
-                <a href="#" className="text-muted-foreground hover:text-foreground transition-colors text-sm">
-                  Web Development
-                </a>
-              </li>
-              <li>
-                <a href="#" className="text-muted-foreground hover:text-foreground transition-colors text-sm">
-                  Data Science
-                </a>
-              </li>
-              <li>
-                <a href="#" className="text-muted-foreground hover:text-foreground transition-colors text-sm">
-                  Mobile Development
-                </a>
-              </li>
-              <li>
-                <a href="#" className="text-muted-foreground hover:text-foreground transition-colors text-sm">
-                  UI/UX Design
-                </a>
-              </li>
-              <li>
-                <a href="#" className="text-muted-foreground hover:text-foreground transition-colors text-sm">
-                  Machine Learning
-                </a>
               </li>
             </ul>
           </div>
