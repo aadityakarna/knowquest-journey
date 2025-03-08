@@ -60,6 +60,14 @@ const Navbar = () => {
               >
                 Home
               </Link>
+              <Link 
+                to="/roadmap" 
+                className={`nav-link text-sm font-medium transition-colors ${
+                  isActive('/roadmap') ? 'text-foreground active' : 'text-muted-foreground hover:text-foreground'
+                }`}
+              >
+                Learning Roadmap
+              </Link>
               {isLoggedIn && (
                 <>
                   <Link 
@@ -69,14 +77,6 @@ const Navbar = () => {
                     }`}
                   >
                     Dashboard
-                  </Link>
-                  <Link 
-                    to="/roadmap" 
-                    className={`nav-link text-sm font-medium transition-colors ${
-                      isActive('/roadmap') ? 'text-foreground active' : 'text-muted-foreground hover:text-foreground'
-                    }`}
-                  >
-                    Roadmap
                   </Link>
                   <Link 
                     to="/resources" 
@@ -133,6 +133,14 @@ const Navbar = () => {
               >
                 Home
               </Link>
+              <Link 
+                to="/roadmap" 
+                className={`block py-2 text-base font-medium rounded-md ${
+                  isActive('/roadmap') ? 'text-accent font-semibold' : 'text-foreground hover:text-accent'
+                }`}
+              >
+                Learning Roadmap
+              </Link>
               {isLoggedIn && (
                 <>
                   <Link 
@@ -142,14 +150,6 @@ const Navbar = () => {
                     }`}
                   >
                     Dashboard
-                  </Link>
-                  <Link 
-                    to="/roadmap" 
-                    className={`block py-2 text-base font-medium rounded-md ${
-                      isActive('/roadmap') ? 'text-accent font-semibold' : 'text-foreground hover:text-accent'
-                    }`}
-                  >
-                    Roadmap
                   </Link>
                   <Link 
                     to="/resources" 
