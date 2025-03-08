@@ -92,19 +92,19 @@ const Footer = () => {
                 </Link>
               </li>
               <li>
-                <a href="#" className="text-muted-foreground hover:text-foreground transition-colors text-sm">
+                <Link to="/privacy" className="text-muted-foreground hover:text-foreground transition-colors text-sm">
                   Privacy Policy
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="text-muted-foreground hover:text-foreground transition-colors text-sm">
+                <Link to="/terms" className="text-muted-foreground hover:text-foreground transition-colors text-sm">
                   Terms of Service
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="text-muted-foreground hover:text-foreground transition-colors text-sm">
+                <Link to="/cookies" className="text-muted-foreground hover:text-foreground transition-colors text-sm">
                   Community Guidelines
-                </a>
+                </Link>
               </li>
             </ul>
           </div>
@@ -118,15 +118,15 @@ const Footer = () => {
             <Link to="/faq" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
               FAQ
             </Link>
-            <a href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+            <Link to="/privacy" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
               Privacy
-            </a>
-            <a href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+            </Link>
+            <Link to="/terms" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
               Terms
-            </a>
-            <a href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+            </Link>
+            <Link to="/cookies" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
               Cookies
-            </a>
+            </Link>
           </div>
         </div>
       </div>
