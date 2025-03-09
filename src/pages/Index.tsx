@@ -4,6 +4,7 @@ import Navbar from '@/components/Navbar';
 import Hero from '@/components/Hero';
 import Features from '@/components/Features';
 import Footer from '@/components/Footer';
+import ProgressStats from '@/components/ProgressStats';
 import { motion, useAnimation } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 
@@ -29,6 +30,9 @@ const Index = () => {
       <main>
         <Hero />
         
+        {/* Progress Stats Section */}
+        <ProgressStats />
+        
         <motion.div
           ref={refFeatures}
           animate={controlsFeatures}
@@ -40,8 +44,6 @@ const Index = () => {
           transition={{ duration: 0.5, ease: "easeOut" }}
         >
           <Features />
-          
-          {/* Testimonials section could go here */}
           
           {/* Call to action section */}
           <section className="py-20 px-4 relative overflow-hidden bg-accent/5">

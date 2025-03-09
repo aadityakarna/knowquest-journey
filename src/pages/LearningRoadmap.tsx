@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -9,6 +8,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { toast } from "sonner";
 import { BookOpen, Clock, Code, Loader2, Youtube, ArrowRight, CheckCircle } from "lucide-react";
 import { motion } from "framer-motion";
+import { useProgress } from "@/context/ProgressContext";
 
 type RoadmapItem = {
   id: string;
@@ -32,6 +32,8 @@ const LearningRoadmap = () => {
   const [isGenerating, setIsGenerating] = useState(false);
   const [roadmap, setRoadmap] = useState<RoadmapItem[]>([]);
   const [activeTab, setActiveTab] = useState("input");
+  
+  const { addCompletedItem, removeCompletedItem, completedItems } = useProgress();
 
   const handleGenerateRoadmap = async () => {
     if (!technology.trim()) {
@@ -41,13 +43,16 @@ const LearningRoadmap = () => {
 
     setIsGenerating(true);
     try {
-      // This is where the actual API call to Gemini would happen
-      // For now, we'll simulate a response with mock data
       await new Promise(resolve => setTimeout(resolve, 2000));
       
-      // Mock data - this would be replaced with the actual API call
       const mockRoadmap = generateMockRoadmap(technology, duration);
-      setRoadmap(mockRoadmap);
+      
+      const updatedRoadmap = mockRoadmap.map(item => ({
+        ...item,
+        completed: completedItems.some(ci => ci.id === item.id)
+      }));
+      
+      setRoadmap(updatedRoadmap);
       setActiveTab("roadmap");
       toast.success(`Your ${technology} learning roadmap is ready!`);
     } catch (error) {
@@ -59,16 +64,28 @@ const LearningRoadmap = () => {
   };
 
   const markAsCompleted = (id: string) => {
-    setRoadmap(prevRoadmap => 
-      prevRoadmap.map(item => 
-        item.id === id ? { ...item, completed: !item.completed } : item
-      )
-    );
+    setRoadmap(prevRoadmap => {
+      const updatedRoadmap = prevRoadmap.map(item => {
+        if (item.id === id) {
+          const newCompletedState = !item.completed;
+          
+          if (newCompletedState) {
+            addCompletedItem({ id: item.id, title: item.title, completed: true });
+          } else {
+            removeCompletedItem(item.id);
+          }
+          
+          return { ...item, completed: newCompletedState };
+        }
+        return item;
+      });
+      
+      return updatedRoadmap;
+    });
+    
     toast.success("Progress updated!");
   };
 
-  // This function mocks what the Gemini API would return
-  // In production, this would be replaced with actual API integration
   const generateMockRoadmap = (tech: string, timeframe: string): RoadmapItem[] => {
     return [
       {
