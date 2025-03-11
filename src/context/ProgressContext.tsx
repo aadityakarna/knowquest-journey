@@ -12,6 +12,8 @@ type ProgressContextType = {
   addCompletedItem: (item: RoadmapItem) => void;
   removeCompletedItem: (id: string) => void;
   totalItems: number;
+  setTotalItems: (count: number) => void;
+  isRoadmapCompleted: (totalRoadmapItems: number) => boolean;
 };
 
 const ProgressContext = createContext<ProgressContextType | undefined>(undefined);
@@ -42,13 +44,19 @@ export const ProgressProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     setCompletedItems(prev => prev.filter(item => item.id !== id));
   };
 
+  const isRoadmapCompleted = (totalRoadmapItems: number) => {
+    return totalRoadmapItems > 0 && completedItems.length >= totalRoadmapItems;
+  };
+
   return (
     <ProgressContext.Provider 
       value={{ 
         completedItems, 
         addCompletedItem, 
         removeCompletedItem,
-        totalItems
+        totalItems,
+        setTotalItems,
+        isRoadmapCompleted
       }}
     >
       {children}

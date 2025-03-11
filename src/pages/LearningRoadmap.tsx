@@ -1,4 +1,5 @@
-import { useState } from "react";
+
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -6,9 +7,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
-import { BookOpen, Clock, Code, Loader2, Youtube, ArrowRight, CheckCircle } from "lucide-react";
+import { BookOpen, Clock, Code, Loader2, Youtube, ArrowRight, CheckCircle, Award } from "lucide-react";
 import { motion } from "framer-motion";
 import { useProgress } from "@/context/ProgressContext";
+import Certificate from "@/components/Certificate";
 
 type RoadmapItem = {
   id: string;
@@ -32,8 +34,20 @@ const LearningRoadmap = () => {
   const [isGenerating, setIsGenerating] = useState(false);
   const [roadmap, setRoadmap] = useState<RoadmapItem[]>([]);
   const [activeTab, setActiveTab] = useState("input");
+  const [showCertificate, setShowCertificate] = useState(false);
   
-  const { addCompletedItem, removeCompletedItem, completedItems } = useProgress();
+  const { addCompletedItem, removeCompletedItem, completedItems, setTotalItems, isRoadmapCompleted } = useProgress();
+
+  // Check if roadmap is completed whenever completedItems changes
+  useEffect(() => {
+    if (roadmap.length > 0) {
+      const allCompleted = isRoadmapCompleted(roadmap.length);
+      if (allCompleted && roadmap.every(item => completedItems.some(ci => ci.id === item.id))) {
+        // Only show certificate if user hasn't dismissed it in this session
+        setShowCertificate(true);
+      }
+    }
+  }, [completedItems, roadmap, isRoadmapCompleted]);
 
   const handleGenerateRoadmap = async () => {
     if (!technology.trim()) {
@@ -53,6 +67,9 @@ const LearningRoadmap = () => {
       }));
       
       setRoadmap(updatedRoadmap);
+      // Update total items in context for progress tracking
+      setTotalItems(updatedRoadmap.length);
+      
       setActiveTab("roadmap");
       toast.success(`Your ${technology} learning roadmap is ready!`);
     } catch (error) {
@@ -157,6 +174,10 @@ const LearningRoadmap = () => {
     ];
   };
 
+  const allCompleted = roadmap.length > 0 && roadmap.every(item => 
+    completedItems.some(ci => ci.id === item.id)
+  );
+
   return (
     <div className="container mx-auto px-4 py-8 max-w-6xl">
       <motion.div
@@ -250,6 +271,27 @@ const LearningRoadmap = () => {
                     </span>
                   </div>
 
+                  {allCompleted && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="mb-6 p-4 border border-green-500 bg-green-50 rounded-lg flex items-center gap-3"
+                    >
+                      <Award className="h-6 w-6 text-green-500" />
+                      <div>
+                        <h3 className="font-semibold text-green-700">Congratulations! You've completed the entire roadmap!</h3>
+                        <p className="text-sm text-green-600">A certificate of achievement has been generated for you.</p>
+                      </div>
+                      <Button
+                        variant="outline"
+                        className="ml-auto"
+                        onClick={() => setShowCertificate(true)}
+                      >
+                        View Certificate
+                      </Button>
+                    </motion.div>
+                  )}
+
                   <div className="space-y-6">
                     {roadmap.map((item, index) => (
                       <motion.div
@@ -341,6 +383,13 @@ const LearningRoadmap = () => {
           )}
         </TabsContent>
       </Tabs>
+
+      {/* Certificate Dialog */}
+      <Certificate 
+        open={showCertificate} 
+        onOpenChange={setShowCertificate}
+        technology={technology}
+      />
     </div>
   );
 };
