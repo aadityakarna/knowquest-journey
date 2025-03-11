@@ -35,6 +35,7 @@ const LearningRoadmap = () => {
   const [roadmap, setRoadmap] = useState<RoadmapItem[]>([]);
   const [activeTab, setActiveTab] = useState("input");
   const [showCertificate, setShowCertificate] = useState(false);
+  const [userName, setUserName] = useState("");
   
   const { addCompletedItem, removeCompletedItem, completedItems, setTotalItems, isRoadmapCompleted } = useProgress();
 
@@ -230,6 +231,15 @@ const LearningRoadmap = () => {
                   </SelectContent>
                 </Select>
               </div>
+              <div className="space-y-2">
+                <Label htmlFor="userName">Your Name (for Certificate)</Label>
+                <Input
+                  id="userName"
+                  placeholder="Enter your name"
+                  value={userName}
+                  onChange={(e) => setUserName(e.target.value)}
+                />
+              </div>
             </CardContent>
             <CardFooter>
               <Button 
@@ -384,11 +394,12 @@ const LearningRoadmap = () => {
         </TabsContent>
       </Tabs>
 
-      {/* Certificate Dialog */}
+      {/* Certificate Dialog with userName prop */}
       <Certificate 
         open={showCertificate} 
         onOpenChange={setShowCertificate}
         technology={technology}
+        userName={userName || "Learner"}
       />
     </div>
   );
