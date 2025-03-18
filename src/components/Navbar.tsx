@@ -69,14 +69,6 @@ const Navbar = () => {
                 Learning Roadmap
               </Link>
               <Link 
-                to="/faq" 
-                className={`nav-link text-sm font-medium transition-colors ${
-                  isActive('/faq') ? 'text-foreground active' : 'text-muted-foreground hover:text-foreground'
-                }`}
-              >
-                FAQ
-              </Link>
-              <Link 
                 to="/contact" 
                 className={`nav-link text-sm font-medium transition-colors ${
                   isActive('/contact') ? 'text-foreground active' : 'text-muted-foreground hover:text-foreground'
@@ -156,14 +148,6 @@ const Navbar = () => {
                 }`}
               >
                 Learning Roadmap
-              </Link>
-              <Link 
-                to="/faq" 
-                className={`block py-2 text-base font-medium rounded-md ${
-                  isActive('/faq') ? 'text-accent font-semibold' : 'text-foreground hover:text-accent'
-                }`}
-              >
-                FAQ
               </Link>
               <Link 
                 to="/contact" 
