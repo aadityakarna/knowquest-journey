@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
@@ -55,7 +56,7 @@ const Hero = () => {
                 <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
               </Button>
             </Link>
-            <Link to="/resources">
+            <Link to="/roadmap">
               <Button variant="outline" size="lg">
                 Explore Resources
               </Button>
