@@ -13,6 +13,9 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
+import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
+import { auth } from '@/lib/firebaseConfig';
+import { Google } from 'lucide-react';
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -27,6 +30,25 @@ const AuthModal = ({ isOpen, onClose, onLogin }: AuthModalProps) => {
   const [name, setName] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
+
+  const signInWithGoogle = async () => {
+    try {
+      const provider = new GoogleAuthProvider();
+      const result = await signInWithPopup(auth, provider);
+      toast({
+        title: "Success!",
+        description: `Logged in as ${result.user.displayName}`,
+      });
+      onLogin();
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Google Sign-In failed. Please try again.",
+        variant: "destructive",
+      });
+      console.error("Google sign-in error:", error);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -168,10 +190,14 @@ const AuthModal = ({ isOpen, onClose, onLogin }: AuthModalProps) => {
               </span>
             </div>
           </div>
-          <div className="grid grid-cols-2 gap-2">
-            <Button variant="outline" className="w-full">Google</Button>
-            <Button variant="outline" className="w-full">GitHub</Button>
-          </div>
+          <Button 
+            variant="outline" 
+            className="w-full flex items-center justify-center gap-2" 
+            onClick={signInWithGoogle}
+          >
+            <Google className="h-4 w-4" />
+            Google
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
