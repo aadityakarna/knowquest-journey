@@ -15,7 +15,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
 import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import { auth } from '@/lib/firebaseConfig';
-import { Google } from 'lucide-react';
+import { Mail } from 'lucide-react';
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -195,7 +195,7 @@ const AuthModal = ({ isOpen, onClose, onLogin }: AuthModalProps) => {
             className="w-full flex items-center justify-center gap-2" 
             onClick={signInWithGoogle}
           >
-            <Google className="h-4 w-4" />
+            <Mail className="h-4 w-4" />
             Google
           </Button>
         </DialogFooter>
