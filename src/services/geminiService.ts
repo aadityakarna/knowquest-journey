@@ -1,16 +1,40 @@
 
-// This file will contain the actual integration with Google's Gemini API
+// This file contains the integration with Google's Gemini API
 
 type GeminiRequestParams = {
   technology: string;
   duration: string;
 };
 
-export async function generateRoadmap(params: GeminiRequestParams) {
+type Resource = {
+  id: string;
+  title: string;
+  type: "video" | "article" | "tutorial";
+  url: string;
+  source: string;
+};
+
+export type RoadmapStep = {
+  id: string;
+  title: string;
+  description: string;
+  estimatedTime: string;
+  resources: Resource[];
+};
+
+export type RoadmapResponse = {
+  roadmap: RoadmapStep[];
+};
+
+export async function generateRoadmap(params: GeminiRequestParams): Promise<RoadmapResponse> {
   const { technology, duration } = params;
   
-  // Once you have your API key, you'll replace this code with actual API calls
-  // For now, this is a placeholder for the future implementation
+  // Get the API key from localStorage
+  const apiKey = localStorage.getItem('gemini_api_key');
+  
+  if (!apiKey) {
+    throw new Error("Gemini API key not found. Please add your API key in the settings.");
+  }
   
   const prompt = `
     Create a detailed learning roadmap for ${technology}. 
@@ -44,7 +68,55 @@ export async function generateRoadmap(params: GeminiRequestParams) {
     }
   `;
 
-  // Once you add your API key, you'd implement the actual API call here
-  // For now, we'll throw an error to indicate it's not implemented
-  throw new Error("Gemini API integration not implemented yet. Add your API key to use this feature.");
+  try {
+    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key=${apiKey}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        contents: [{
+          parts: [{
+            text: prompt
+          }]
+        }]
+      })
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      console.error("Gemini API error:", errorData);
+      throw new Error(`Gemini API error: ${errorData.error?.message || 'Unknown error'}`);
+    }
+
+    const data = await response.json();
+    
+    // Extract the text from the response
+    const generatedText = data.candidates[0]?.content?.parts[0]?.text;
+    
+    if (!generatedText) {
+      throw new Error("No content generated from Gemini API");
+    }
+    
+    // Extract the JSON part from the text (in case there's any additional text)
+    const jsonMatch = generatedText.match(/\{[\s\S]*\}/);
+    
+    if (!jsonMatch) {
+      throw new Error("Could not parse JSON from Gemini response");
+    }
+    
+    const roadmapData = JSON.parse(jsonMatch[0]) as RoadmapResponse;
+    
+    // Validate the response structure
+    if (!roadmapData.roadmap || !Array.isArray(roadmapData.roadmap)) {
+      throw new Error("Invalid roadmap data structure from Gemini API");
+    }
+    
+    return roadmapData;
+  } catch (error) {
+    console.error("Error generating roadmap:", error);
+    
+    // If there's an error, return a fallback response indicating the error
+    throw error;
+  }
 }

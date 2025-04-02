@@ -7,25 +7,15 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
-import { BookOpen, Clock, Code, Loader2, Youtube, ArrowRight, CheckCircle, Award } from "lucide-react";
+import { BookOpen, Clock, Code, Loader2, Youtube, ArrowRight, CheckCircle, Award, AlertCircle } from "lucide-react";
 import { motion } from "framer-motion";
 import { useProgress } from "@/context/ProgressContext";
 import Certificate from "@/components/Certificate";
+import GeminiApiKeyForm from "@/components/GeminiApiKeyForm";
+import { generateRoadmap, RoadmapStep } from "@/services/geminiService";
 
-type RoadmapItem = {
-  id: string;
-  title: string;
-  description: string;
-  resources: Resource[];
+type RoadmapItem = RoadmapStep & {
   completed: boolean;
-};
-
-type Resource = {
-  id: string;
-  title: string;
-  type: "video" | "article" | "tutorial";
-  url: string;
-  source: string;
 };
 
 const LearningRoadmap = () => {
@@ -36,8 +26,16 @@ const LearningRoadmap = () => {
   const [activeTab, setActiveTab] = useState("input");
   const [showCertificate, setShowCertificate] = useState(false);
   const [userName, setUserName] = useState("");
+  const [hasApiKey, setHasApiKey] = useState(false);
+  const [apiError, setApiError] = useState<string | null>(null);
   
   const { addCompletedItem, removeCompletedItem, completedItems, setTotalItems, isRoadmapCompleted } = useProgress();
+
+  // Check for API key on component mount
+  useEffect(() => {
+    const apiKey = localStorage.getItem('gemini_api_key');
+    setHasApiKey(!!apiKey);
+  }, []);
 
   // Check if roadmap is completed whenever completedItems changes
   useEffect(() => {
@@ -56,18 +54,29 @@ const LearningRoadmap = () => {
       return;
     }
 
+    if (!hasApiKey) {
+      toast.error("Please add your Gemini API key in the settings below");
+      return;
+    }
+
+    setApiError(null);
     setIsGenerating(true);
+    
     try {
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      // Call the Gemini API to generate the roadmap
+      const roadmapData = await generateRoadmap({
+        technology,
+        duration
+      });
       
-      const mockRoadmap = generateMockRoadmap(technology, duration);
-      
-      const updatedRoadmap = mockRoadmap.map(item => ({
+      // Transform the API response into our RoadmapItem type with completed status
+      const updatedRoadmap = roadmapData.roadmap.map(item => ({
         ...item,
         completed: completedItems.some(ci => ci.id === item.id)
       }));
       
       setRoadmap(updatedRoadmap);
+      
       // Update total items in context for progress tracking
       setTotalItems(updatedRoadmap.length);
       
@@ -75,7 +84,8 @@ const LearningRoadmap = () => {
       toast.success(`Your ${technology} learning roadmap is ready!`);
     } catch (error) {
       console.error("Error generating roadmap:", error);
-      toast.error("Failed to generate roadmap. Please try again.");
+      setApiError((error as Error).message);
+      toast.error("Failed to generate roadmap. See details below.");
     } finally {
       setIsGenerating(false);
     }
@@ -104,75 +114,16 @@ const LearningRoadmap = () => {
     toast.success("Progress updated!");
   };
 
-  const generateMockRoadmap = (tech: string, timeframe: string): RoadmapItem[] => {
-    return [
-      {
-        id: "1",
-        title: `Introduction to ${tech}`,
-        description: `Learn the fundamentals of ${tech} and set up your development environment.`,
-        completed: false,
-        resources: [
-          {
-            id: "r1",
-            title: `Getting Started with ${tech} - Complete Guide`,
-            type: "video",
-            url: "#",
-            source: "YouTube"
-          },
-          {
-            id: "r2",
-            title: `${tech} Fundamentals for Beginners`,
-            type: "article",
-            url: "#",
-            source: "Medium"
-          }
-        ]
-      },
-      {
-        id: "2",
-        title: `${tech} Core Concepts`,
-        description: `Understand the main concepts and architecture of ${tech}.`,
-        completed: false,
-        resources: [
-          {
-            id: "r3",
-            title: `${tech} Architecture Explained`,
-            type: "video",
-            url: "#",
-            source: "YouTube"
-          },
-          {
-            id: "r4",
-            title: `Core ${tech} Concepts Every Developer Should Know`,
-            type: "article",
-            url: "#",
-            source: "Dev.to"
-          }
-        ]
-      },
-      {
-        id: "3",
-        title: `Building Projects with ${tech}`,
-        description: `Apply your knowledge by building real-world projects with ${tech}.`,
-        completed: false,
-        resources: [
-          {
-            id: "r5",
-            title: `Build a Complete Application with ${tech}`,
-            type: "tutorial",
-            url: "#",
-            source: "Udemy"
-          },
-          {
-            id: "r6",
-            title: `${tech} Project Ideas for Portfolios`,
-            type: "article",
-            url: "#",
-            source: "freeCodeCamp"
-          }
-        ]
-      }
-    ];
+  const getResourceIcon = (type: string) => {
+    switch (type) {
+      case 'video':
+        return <Youtube className="h-5 w-5 text-red-500" />;
+      case 'article':
+        return <BookOpen className="h-5 w-5 text-blue-500" />;
+      case 'tutorial':
+      default:
+        return <Code className="h-5 w-5 text-purple-500" />;
+    }
   };
 
   const allCompleted = roadmap.length > 0 && roadmap.every(item => 
@@ -240,6 +191,18 @@ const LearningRoadmap = () => {
                   onChange={(e) => setUserName(e.target.value)}
                 />
               </div>
+              
+              {apiError && (
+                <div className="p-4 mt-4 border border-red-200 bg-red-50 rounded-md">
+                  <div className="flex items-start gap-2">
+                    <AlertCircle className="h-5 w-5 text-red-500 mt-0.5" />
+                    <div>
+                      <h4 className="font-semibold text-red-700">Error generating roadmap</h4>
+                      <p className="text-sm text-red-600">{apiError}</p>
+                    </div>
+                  </div>
+                </div>
+              )}
             </CardContent>
             <CardFooter>
               <Button 
@@ -261,6 +224,8 @@ const LearningRoadmap = () => {
               </Button>
             </CardFooter>
           </Card>
+          
+          <GeminiApiKeyForm />
         </TabsContent>
 
         <TabsContent value="roadmap" className="space-y-6">
@@ -319,6 +284,10 @@ const LearningRoadmap = () => {
                                   <span>{index + 1}. {item.title}</span>
                                 </CardTitle>
                                 <CardDescription>{item.description}</CardDescription>
+                                <p className="text-sm text-muted-foreground flex items-center gap-1 mt-1">
+                                  <Clock className="h-3.5 w-3.5" />
+                                  Estimated time: {item.estimatedTime}
+                                </p>
                               </div>
                               <Button
                                 variant={item.completed ? "outline" : "default"}
@@ -344,15 +313,7 @@ const LearningRoadmap = () => {
                                   className="flex items-start p-3 rounded-md border hover:bg-accent/10 transition-colors"
                                 >
                                   <div className="flex-shrink-0 mr-3">
-                                    {resource.type === "video" && (
-                                      <Youtube className="h-5 w-5 text-red-500" />
-                                    )}
-                                    {resource.type === "article" && (
-                                      <BookOpen className="h-5 w-5 text-blue-500" />
-                                    )}
-                                    {resource.type === "tutorial" && (
-                                      <Code className="h-5 w-5 text-purple-500" />
-                                    )}
+                                    {getResourceIcon(resource.type)}
                                   </div>
                                   <div>
                                     <div className="font-medium">{resource.title}</div>
