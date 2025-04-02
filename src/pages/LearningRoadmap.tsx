@@ -11,7 +11,6 @@ import { BookOpen, Clock, Code, Loader2, Youtube, ArrowRight, CheckCircle, Award
 import { motion } from "framer-motion";
 import { useProgress } from "@/context/ProgressContext";
 import Certificate from "@/components/Certificate";
-import GeminiApiKeyForm from "@/components/GeminiApiKeyForm";
 import { generateRoadmap, RoadmapStep } from "@/services/geminiService";
 
 type RoadmapItem = RoadmapStep & {
@@ -26,16 +25,9 @@ const LearningRoadmap = () => {
   const [activeTab, setActiveTab] = useState("input");
   const [showCertificate, setShowCertificate] = useState(false);
   const [userName, setUserName] = useState("");
-  const [hasApiKey, setHasApiKey] = useState(false);
   const [apiError, setApiError] = useState<string | null>(null);
   
   const { addCompletedItem, removeCompletedItem, completedItems, setTotalItems, isRoadmapCompleted } = useProgress();
-
-  // Check for API key on component mount
-  useEffect(() => {
-    const apiKey = localStorage.getItem('gemini_api_key');
-    setHasApiKey(!!apiKey);
-  }, []);
 
   // Check if roadmap is completed whenever completedItems changes
   useEffect(() => {
@@ -51,11 +43,6 @@ const LearningRoadmap = () => {
   const handleGenerateRoadmap = async () => {
     if (!technology.trim()) {
       toast.error("Please enter a technology you want to learn");
-      return;
-    }
-
-    if (!hasApiKey) {
-      toast.error("Please add your Gemini API key in the settings below");
       return;
     }
 
@@ -84,8 +71,8 @@ const LearningRoadmap = () => {
       toast.success(`Your ${technology} learning roadmap is ready!`);
     } catch (error) {
       console.error("Error generating roadmap:", error);
-      setApiError((error as Error).message);
-      toast.error("Failed to generate roadmap. See details below.");
+      setApiError("Gemini API key not configured. This feature will be available soon.");
+      toast.error("Roadmap generation is not yet available. Coming soon!");
     } finally {
       setIsGenerating(false);
     }
@@ -193,12 +180,12 @@ const LearningRoadmap = () => {
               </div>
               
               {apiError && (
-                <div className="p-4 mt-4 border border-red-200 bg-red-50 rounded-md">
+                <div className="p-4 mt-4 border border-amber-200 bg-amber-50 rounded-md">
                   <div className="flex items-start gap-2">
-                    <AlertCircle className="h-5 w-5 text-red-500 mt-0.5" />
+                    <AlertCircle className="h-5 w-5 text-amber-500 mt-0.5" />
                     <div>
-                      <h4 className="font-semibold text-red-700">Error generating roadmap</h4>
-                      <p className="text-sm text-red-600">{apiError}</p>
+                      <h4 className="font-semibold text-amber-700">Coming Soon</h4>
+                      <p className="text-sm text-amber-600">{apiError}</p>
                     </div>
                   </div>
                 </div>
@@ -225,7 +212,22 @@ const LearningRoadmap = () => {
             </CardFooter>
           </Card>
           
-          <GeminiApiKeyForm />
+          <Card>
+            <CardHeader>
+              <CardTitle>API Configuration</CardTitle>
+              <CardDescription>
+                Gemini API integration coming soon
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="flex items-center gap-2 p-3 bg-amber-50 border border-amber-200 rounded-md">
+                <AlertCircle className="h-5 w-5 text-amber-500" />
+                <span className="text-sm text-amber-700">
+                  The Gemini API integration is currently being configured. Roadmap generation will be available soon.
+                </span>
+              </div>
+            </CardContent>
+          </Card>
         </TabsContent>
 
         <TabsContent value="roadmap" className="space-y-6">

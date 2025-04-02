@@ -29,8 +29,12 @@ export type RoadmapResponse = {
 export async function generateRoadmap(params: GeminiRequestParams): Promise<RoadmapResponse> {
   const { technology, duration } = params;
   
-  // Get the API key from localStorage
-  const apiKey = localStorage.getItem('gemini_api_key');
+  // For now, we'll simulate that the API key is not found
+  throw new Error("Gemini API key not configured yet. This feature will be available soon.");
+  
+  // This code will be used when you add the API key later
+  /* 
+  const apiKey = "YOUR_API_KEY"; // You'll replace this with your actual API key later
   
   if (!apiKey) {
     throw new Error("Gemini API key not found. Please add your API key in the settings.");
@@ -115,8 +119,7 @@ export async function generateRoadmap(params: GeminiRequestParams): Promise<Road
     return roadmapData;
   } catch (error) {
     console.error("Error generating roadmap:", error);
-    
-    // If there's an error, return a fallback response indicating the error
     throw error;
   }
+  */
 }
