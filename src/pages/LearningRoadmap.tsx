@@ -12,6 +12,7 @@ import { motion } from "framer-motion";
 import { useProgress } from "@/context/ProgressContext";
 import Certificate from "@/components/Certificate";
 import { generateRoadmap, RoadmapStep } from "@/services/geminiService";
+import { useNavigate } from "react-router-dom";
 
 type RoadmapItem = RoadmapStep & {
   completed: boolean;
@@ -26,6 +27,8 @@ const LearningRoadmap = () => {
   const [showCertificate, setShowCertificate] = useState(false);
   const [userName, setUserName] = useState("");
   const [apiError, setApiError] = useState<string | null>(null);
+  const [roadmapId, setRoadmapId] = useState<string | null>(null);
+  const navigate = useNavigate();
   
   const { addCompletedItem, removeCompletedItem, completedItems, setTotalItems, isRoadmapCompleted } = useProgress();
 
@@ -67,6 +70,13 @@ const LearningRoadmap = () => {
       // Update total items in context for progress tracking
       setTotalItems(updatedRoadmap.length);
       
+      // Generate a unique ID for this roadmap
+      const newRoadmapId = `roadmap-${Date.now()}`;
+      setRoadmapId(newRoadmapId);
+      
+      // Save the roadmap to localStorage
+      saveRoadmap(newRoadmapId, updatedRoadmap);
+      
       setActiveTab("roadmap");
       toast.success(`Your ${technology} learning roadmap is ready!`);
     } catch (error) {
@@ -76,6 +86,25 @@ const LearningRoadmap = () => {
     } finally {
       setIsGenerating(false);
     }
+  };
+
+  const saveRoadmap = (id: string, roadmapItems: RoadmapItem[]) => {
+    // Get existing roadmaps
+    const existingData = localStorage.getItem("savedRoadmaps");
+    const existingRoadmaps = existingData ? JSON.parse(existingData) : [];
+    
+    // Create new roadmap entry
+    const newRoadmap = {
+      id,
+      technology,
+      duration,
+      createdAt: new Date().toISOString(),
+      steps: roadmapItems
+    };
+    
+    // Add to existing roadmaps and save back to localStorage
+    const updatedRoadmaps = [...existingRoadmaps, newRoadmap];
+    localStorage.setItem("savedRoadmaps", JSON.stringify(updatedRoadmaps));
   };
 
   const markAsCompleted = (id: string) => {
@@ -99,6 +128,10 @@ const LearningRoadmap = () => {
     });
     
     toast.success("Progress updated!");
+  };
+
+  const navigateToProfile = () => {
+    navigate('/profile');
   };
 
   const getResourceIcon = (type: string) => {
@@ -336,9 +369,14 @@ const LearningRoadmap = () => {
                   <Button variant="outline" onClick={() => setActiveTab("input")}>
                     Edit Preferences
                   </Button>
-                  <Button variant="default">
-                    Save Roadmap
-                  </Button>
+                  <div className="flex gap-2">
+                    <Button variant="outline" onClick={navigateToProfile}>
+                      View in Profile
+                    </Button>
+                    <Button variant="default">
+                      Save Roadmap
+                    </Button>
+                  </div>
                 </CardFooter>
               </Card>
             </div>

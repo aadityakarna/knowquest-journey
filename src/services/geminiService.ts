@@ -29,8 +29,86 @@ export type RoadmapResponse = {
 export async function generateRoadmap(params: GeminiRequestParams): Promise<RoadmapResponse> {
   const { technology, duration } = params;
   
-  // For now, we'll simulate that the API key is not found
-  throw new Error("Gemini API key not configured yet. This feature will be available soon.");
+  // For now, we'll simulate a response for development since the Gemini API key is not configured yet
+  // Remove this mock and uncomment the actual implementation when adding the API key
+  
+  // This is a temporary mock response
+  const mockRoadmap: RoadmapResponse = {
+    roadmap: [
+      {
+        id: "step1",
+        title: `${technology} Fundamentals`,
+        description: `Learn the core concepts and basics of ${technology}.`,
+        estimatedTime: "2 weeks",
+        resources: [
+          {
+            id: "res1",
+            title: `Introduction to ${technology}`,
+            type: "video",
+            url: "https://example.com/intro",
+            source: "YouTube"
+          },
+          {
+            id: "res2",
+            title: `${technology} Crash Course`,
+            type: "tutorial",
+            url: "https://example.com/tutorial",
+            source: "freeCodeCamp"
+          }
+        ]
+      },
+      {
+        id: "step2",
+        title: `Intermediate ${technology}`,
+        description: `Build on your foundation with more advanced ${technology} concepts.`,
+        estimatedTime: "3 weeks",
+        resources: [
+          {
+            id: "res3",
+            title: `Advanced ${technology} Techniques`,
+            type: "article",
+            url: "https://example.com/advanced",
+            source: "Medium"
+          },
+          {
+            id: "res4",
+            title: `${technology} Project Tutorial`,
+            type: "tutorial",
+            url: "https://example.com/project",
+            source: "Udemy"
+          }
+        ]
+      },
+      {
+        id: "step3",
+        title: `${technology} in Practice`,
+        description: `Apply your knowledge by building real-world projects with ${technology}.`,
+        estimatedTime: "4 weeks",
+        resources: [
+          {
+            id: "res5",
+            title: `Building Apps with ${technology}`,
+            type: "video",
+            url: "https://example.com/build",
+            source: "YouTube"
+          },
+          {
+            id: "res6",
+            title: `${technology} Best Practices`,
+            type: "article",
+            url: "https://example.com/practices",
+            source: "Dev.to"
+          }
+        ]
+      }
+    ]
+  };
+  
+  // Uncomment this line if you want to simulate an error instead
+  // throw new Error("Gemini API key not configured yet. This feature will be available soon.");
+  
+  // Return the mock response
+  return mockRoadmap;
   
   // This code will be used when you add the API key later
   /* 
